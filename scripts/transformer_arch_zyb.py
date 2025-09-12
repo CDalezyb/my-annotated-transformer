@@ -112,7 +112,7 @@ class MultiHeadAttention(nn.Module):
 
 # %%
 # Implementations of
-#                       Embedding, PositionalEncoder, LayerNorm, PositionwiseFeedForward,
+#                       Embedding, PositionalEncoding, LayerNorm, PositionwiseFeedForward,
 #                       EncoderLayer, DecoderLayer,
 #                       Encoder, Decoder
 #                       EncoderDecoder full arch and make_model method to construct the full network
@@ -136,14 +136,14 @@ class Embedding(nn.Module):
         return self.lut(x) * math.sqrt(self.d_model)
 
 
-class PositionalEncoder(nn.Module):
+class PositionalEncoding(nn.Module):
     """
     Args:
         NOT FINISHED YET.
     """
 
     def __init__(self, d_model: int, dropout: float = 0.1, MAX_LEN: int = 5000):
-        super(PositionalEncoder, self).__init__()
+        super(PositionalEncoding, self).__init__()
         self.drop = nn.Dropout(dropout)
 
         # Compute the positional encodings once in log space.
@@ -371,7 +371,7 @@ class EncoderDecoder(nn.Module):
     ):
         # 输入 embedding，with src_mask
         self.src_embed = nn.Sequential(
-            Embedding(d_model, src_vocab), PositionalEncoder(d_model, dropout)
+            Embedding(d_model, src_vocab), PositionalEncoding(d_model, dropout)
         )
         self.encoder = Encoder(d_model, n_heads, d_ffn, n_layers, dropout)
 
