@@ -74,7 +74,7 @@ class MultiHeadAttention(nn.Module):
                 dropout:      probability of dropout
         """
         assert d_model % n_heads == 0, "d_model should be "
-        super(MultiHeadAttention, self).__init()
+        super(MultiHeadAttention, self).__init__()
         self.n_heads = n_heads
         self.d_model = d_model
         self.d_k = d_model / n_heads
