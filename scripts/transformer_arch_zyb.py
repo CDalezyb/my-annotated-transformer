@@ -142,11 +142,30 @@ class PositionalEncoder(nn.Module):
         NOT FINISHED YET.
     """
 
-    def __init__(self, d_model: int, dropout: float = 0.1, max_len: int = 5000):
-        pass
+    def __init__(self, d_model: int, dropout: float = 0.1, MAX_LEN: int = 5000):
+        super(PositionalEncoder, self).__init__()
+        self.drop = nn.Dropout(dropout)
+
+        # Compute the positional encodings once in log space.
+        pe = torch.zeros(MAX_LEN, d_model)
+        # unsqueeze makes the tensor from shape [MAX_LEN] to [MAX_LNE, 1]
+        pos = torch.arange(0, MAX_LEN).unsqueeze(1)
+        div_term = torch.exp(
+            torch.arrange(0, d_model, 2) * -(math.log(10000.0) / d_model)
+        )
+        pe[:, 0::2] = torch.sin(pos * div_term)
+        pe[:, 1::2] = torch.cos(pos * div_term)
+        # unsqueeze convert from shape[MAX_LEN, d_model] to [1, MAX_LEN, d_model]
+        pe = pe.unsqueeze(0)
+        # in state_dict but not in parameters()
+        self.register_buffer("pe", pe)
 
     def forward(self, x: Tensor):
-        return x
+        """
+        Args:
+            x:         output of enbedded token, shape (batch_size,sql_len,d_model)
+        """
+        return x + self.pe[:, : x.size(1)].requires_grad_(False)
 
 
 class LayerNorm(nn.module):
